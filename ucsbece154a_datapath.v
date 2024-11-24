@@ -106,37 +106,37 @@ always @ * begin
     if (AdrSrc_i)
         PC <= PC + sign_extended_imm; // Branch/Jump target
     else
-        PC = PC + 4; // Default PC increment
+        PC <= PC + 4; // Default PC increment
 end
 
 // ALU Src A Mux
 always @ * begin
     case (ALUSrcA_i)
-        ALUSrcA_pc: A = PC;
-        ALUSrcA_oldpc: A = OldPC;
-        ALUSrcA_reg: A = rd1;
-        default: A = 32'b0;
+        ALUSrcA_pc: A <= PC;
+        ALUSrcA_oldpc: A <= OldPC;
+        ALUSrcA_reg: A <= rd1;
+        default: A <= 32'b0;
     endcase
 end
 
 // ALU Src B Mux
 always @ * begin
     case (ALUSrcB_i)
-        ALUSrcB_reg: B = rd2;
-        ALUSrcB_imm: B = sign_extended_imm;
-        ALUSrcB_4: B = 32'b0100;
-        default: B = 32'b0;
+        ALUSrcB_reg: B <= rd2;
+        ALUSrcB_imm: B <= sign_extended_imm;
+        ALUSrcB_4: B <= 32'b0100;
+        default: B <= 32'b0;
     endcase
 end
 
 // Result Src Mux
 always @ * begin
     case (ResultSrc_i)
-        ResultSrc_aluout: Result = ALUout;
-        ResultSrc_data: Result = Data;
-        ResultSrc_aluresult: Result = ALUResult;
-        ResultSrc_lui: Result = sign_extended_imm;
-        default: Result = 32'b0;
+        ResultSrc_aluout: Result <= ALUout;
+        ResultSrc_data: Result <= Data;
+        ResultSrc_aluresult: Result <= ALUResult;
+        ResultSrc_lui: Result <= sign_extended_imm;
+        default: Result <= 32'b0;
     endcase
 end
 

@@ -74,7 +74,7 @@ ucsbece154a_rf rf (
     .rd1_o(rd1),
     .rd2_o(rd2),
     .we3_i(RegWrite_i),
-    .wd3_i(ALU)
+    .wd3_i(Result)
 );
 
 wire[31:0] tempALUout = ALUout;

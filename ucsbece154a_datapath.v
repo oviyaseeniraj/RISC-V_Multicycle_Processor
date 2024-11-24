@@ -31,8 +31,7 @@ module ucsbece154a_datapath (
 
 // Internal registers
 
-reg [31:0] PC, OldPC, Instr, Data, A, B;
-wire[31:0] ALUout;
+reg [31:0] PC, OldPC, Instr, Data, A, B, ALUout;
 
 // Buses connected to internal registers
 reg [31:0] Result;
@@ -78,11 +77,12 @@ ucsbece154a_rf rf (
     .wd3_i(ALU)
 );
 
+wire[31:0] tempALUout = ALUout;
 ucsbece154a_alu alu (
     .a_i(A),
     .b_i(B),
     .alucontrol_i(ALUControl_i),
-    .result_o(ALUout),
+    .result_o(tempALUout),
     .zero_o(zero_o)
 );
 

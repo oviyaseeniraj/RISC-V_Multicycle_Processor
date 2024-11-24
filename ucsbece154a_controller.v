@@ -133,20 +133,20 @@ module ucsbece154a_controller (
 
  always @ * begin
    case (state_next)
-    state_Fetch:     controls_next = 14'b1_x_0_1_0_00_10_0_10_00;  // IRWrite active
-    state_Decode:    controls_next = 14'b0_0_0_0_0_01_01_x_xx_00;
-    state_MemAdr:    controls_next = 14'b0_0_0_0_0_10_01_x_xx_00;
-    state_MemRead:   controls_next = 14'b0_0_0_0_0_xx_xx_1_00_xx;
-    state_MemWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_01_xx;  // Write back
-    state_MemWrite:  controls_next = 14'b0_0_1_0_0_xx_xx_1_00_xx;  // Write to memory
-    state_ExecuteR:  controls_next = 14'b0_0_0_0_0_10_00_x_xx_10;  // R-type ALU
-    state_ALUWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_00_xx;  // Write ALU result
-    state_ExecuteI:  controls_next = 14'b0_0_0_0_0_10_01_x_xx_10;  // I-type ALU
-    state_JAL:       controls_next = 14'b1_0_0_0_0_01_10_x_00_00;  // Jump
-    state_BEQ:       controls_next = 14'b0_1_0_0_0_10_00_x_00_01;  // Branch
-    state_LUI:       controls_next = 14'b0_0_0_0_1_xx_01_x_00_10;  // Load Upper Immediate
-    default:         controls_next = 14'b0_0_0_0_0_00_00_0_00_00;
-  endcase
+      state_Fetch:     controls_next = 14'b1_x_0_1_0_00_10_0_10_00;   
+      state_Decode:    controls_next = 14'b0_0_0_0_0_01_01_x_xx_00;
+      state_MemAdr:    controls_next = 14'b0_0_0_0_0_10_01_x_xx_00; 
+      state_MemRead:   controls_next = 14'b0_0_0_0_0_xx_xx_1_00_xx;  
+      state_MemWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_01_xx; 
+      state_MemWrite:  controls_next = 14'b0_0_1_0_0_xx_xx_1_00_xx; 
+      state_ExecuteR:  controls_next = 14'b0_0_0_0_0_10_00_x_xx_10; 
+      state_ALUWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_00_xx;     
+      state_ExecuteI:  controls_next = 14'b0_0_0_0_0_10_01_x_xx_10;   
+      state_JAL:       controls_next = 14'b1_0_0_0_0_01_10_x_00_00; 
+      state_BEQ:       controls_next = 14'b0_1_0_0_0_10_00_x_00_01; 
+      state_LUI:       controls_next = 14'b0_0_0_0_0_xx_01_x_00_10; 
+	  default:         controls_next = 14'b0_0_0_0_0_00_00_0_00_00;
+   endcase
  end
 
  // *******  Updating control and main FSM FFs  ********

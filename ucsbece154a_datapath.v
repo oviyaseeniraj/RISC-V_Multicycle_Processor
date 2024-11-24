@@ -77,16 +77,12 @@ ucsbece154a_rf rf (
     .wd3_i(Result)
 );
 
-reg [31:0] ALUout_reg;
-always @(posedge clk) begin
-    ALUout_reg <= ALUout; // Store ALU result before feedback
-end
-
+wire[31:0] tempALUout = ALUout;
 ucsbece154a_alu alu (
     .a_i(A),
     .b_i(B),
     .alucontrol_i(ALUControl_i),
-    .result_o(ALUout_reg),
+    .result_o(tempALUout),
     .zero_o(zero_o)
 );
 
@@ -136,9 +132,14 @@ always @ * begin
 end
 
 // Result Src Mux
+reg [31:0] ALUout_reg;
+always @(posedge clk) begin
+    ALUout_reg <= ALUout; // Store ALU result before feedback
+end
+
 always @ * begin
     case (ResultSrc_i)
-        ResultSrc_aluout: Result <= ALUout;
+        ResultSrc_aluout: Result <= ALUout_reg;
         ResultSrc_data: Result <= Data;
         ResultSrc_aluresult: Result <= ALUResult;
         ResultSrc_lui: Result <= sign_extended_imm;

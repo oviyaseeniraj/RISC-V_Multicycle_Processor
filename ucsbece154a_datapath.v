@@ -101,6 +101,8 @@ always @ * begin
 end
 
 // Muxes
+assign Adr_o = (AdrSrc_i) ? PC : ALUout;  // Choose PC or ALU result based on AdrSrc_i
+assign WriteData_o = B;                  // Data written to memory comes from register B
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 always @(posedge clk) begin
@@ -145,6 +147,13 @@ always @ * begin
         ResultSrc_lui: Result <= sign_extended_imm;
         default: Result <= 32'b0;
     endcase
+end
+
+always @(posedge clk) begin
+    if (RegWrite_i) begin
+        rf.a3_i <= Instr[11:7];  // Destination register
+        rf.wd3_i <= Result;      // Data to write
+    end
 end
 
 

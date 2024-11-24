@@ -32,14 +32,14 @@ module ucsbece154a_controller (
 // **********   Extend unit    *********
  always @ * begin
    case (op_i)
-	instr_lw_op:        ImmSrc_o = 3'b000;       
-	instr_sw_op:        ImmSrc_o = 3'b001; 
-	instr_Rtype_op:     ImmSrc_o = 3'bxxx;  
-	instr_beq_op:       ImmSrc_o = 3'b010;  
-	instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
-	instr_jal_op:       ImmSrc_o = 3'b011; 
-        instr_lui_op:       ImmSrc_o = 3'b100;  
-	default: 	    ImmSrc_o = 3'bxxx; 
+    instr_lw_op:        ImmSrc_o = 3'b000;       
+    instr_sw_op:        ImmSrc_o = 3'b001; 
+    instr_Rtype_op:     ImmSrc_o = 3'bxxx;  
+    instr_beq_op:       ImmSrc_o = 3'b010;  
+    instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
+    instr_jal_op:       ImmSrc_o = 3'b011; 
+    instr_lui_op:       ImmSrc_o = 3'b100;  
+    default: 	    ImmSrc_o = 3'b000; 
    endcase
  end
 
@@ -49,22 +49,19 @@ module ucsbece154a_controller (
  wire RtypeSub = funct7_i & op_i[5];
 
  always @ * begin
-    case(ALUOp)
-       ALUop_mem:                 ALUControl_o = ALUcontrol_add;
-       ALUop_beq:                 ALUControl_o = ALUcontrol_sub;
-       ALUop_other: 
-         case(funct3_i) 
-           instr_addsub_funct3: begin
-                 if(RtypeSub)     ALUControl_o = ALUcontrol_sub;
-                 else             ALUControl_o = ALUcontrol_add;  
-           end
-           instr_slt_funct3:      ALUControl_o = ALUcontrol_slt;  
-           instr_or_funct3:       ALUControl_o = ALUcontrol_or;  
-           instr_and_funct3:      ALUControl_o = ALUcontrol_and;  
-           default:               ALUControl_o = ALUcontrol_add;
-         endcase
-    default:                      ALUControl_o = ALUcontrol_add;
-   endcase
+    case (ALUOp)
+      ALUop_mem:    ALUControl_o = ALUcontrol_add;  // Load/Store uses ADD
+      ALUop_beq:    ALUControl_o = ALUcontrol_sub;  // Branch uses SUB
+      ALUop_other:  // R-type or I-type ALU instructions
+          case (funct3_i)
+              instr_addsub_funct3: ALUControl_o = (funct7_i) ? ALUcontrol_sub : ALUcontrol_add;
+              instr_slt_funct3:    ALUControl_o = ALUcontrol_slt;
+              instr_or_funct3:     ALUControl_o = ALUcontrol_or;
+              instr_and_funct3:    ALUControl_o = ALUcontrol_and;
+              default:             ALUControl_o = ALUcontrol_add;
+          endcase
+      default:       ALUControl_o = ALUcontrol_add;
+    endcase
  end
 
 

@@ -29,6 +29,10 @@ module ucsbece154a_datapath (
 
 `include "ucsbece154a_defines.vh"
 
+assign op_o = Instr[6:0];          // Opcode field
+assign funct3_o = Instr[14:12];   // funct3 field
+assign funct7_o = Instr[30];      // Most significant bit of funct7
+
 // Internal registers
 
 reg [31:0] PC, OldPC, Instr, Data, A, B, ALUout;
@@ -77,7 +81,7 @@ ucsbece154a_rf rf (
     .wd3_i(Result)
 );
 
-wire[31:0] tempALUout = ALUout;
+assign ALUResult = tempALUout;    // ALU result from the instantiated module
 ucsbece154a_alu alu (
     .a_i(A),
     .b_i(B),
@@ -112,26 +116,24 @@ always @(posedge clk) begin
         PC <= AdrSrc_i ? PC + sign_extended_imm : PC + 4;
 end
 
-
-// ALU Src A Mux
 always @ * begin
     case (ALUSrcA_i)
-        ALUSrcA_pc: A <= PC;
-        ALUSrcA_oldpc: A <= OldPC;
-        ALUSrcA_reg: A <= rd1;
-        default: A <= 32'b0;
+        ALUSrcA_pc:    A = PC;
+        ALUSrcA_oldpc: A = OldPC;
+        ALUSrcA_reg:   A = rd1;     // Register file output
+        default:       A = 32'b0;
     endcase
 end
 
-// ALU Src B Mux
 always @ * begin
     case (ALUSrcB_i)
-        ALUSrcB_reg: B <= rd2;
-        ALUSrcB_imm: B <= sign_extended_imm;
-        ALUSrcB_4: B <= 32'b0100;
-        default: B <= 32'b0;
+        ALUSrcB_reg:   B = rd2;    // Register file output
+        ALUSrcB_imm:   B = sign_extended_imm; // Immediate value
+        ALUSrcB_4:     B = 32'd4; // Constant value (PC increment)
+        default:       B = 32'b0;
     endcase
 end
+
 
 // Result Src Mux
 reg [31:0] ALUout_reg;
@@ -141,11 +143,10 @@ end
 
 always @ * begin
     case (ResultSrc_i)
-        ResultSrc_aluout: Result <= ALUout_reg;
-        ResultSrc_data: Result <= Data;
-        ResultSrc_aluresult: Result <= ALUResult;
-        ResultSrc_lui: Result <= sign_extended_imm;
-        default: Result <= 32'b0;
+        ResultSrc_aluout: Result = ALUout;  // ALU result
+        ResultSrc_data:   Result = Data;   // Memory data
+        ResultSrc_lui:    Result = sign_extended_imm; // LUI immediate
+        default:          Result = 32'b0;
     endcase
 end
 

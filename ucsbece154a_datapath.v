@@ -90,9 +90,9 @@ ucsbece154a_alu alu (
 reg [31:0] sign_extended_imm;
 always @ * begin
     case (ImmSrc_i)
-        imm_Itype: sign_extended_imm = {20{Instr[31]}, Instr[31:20]};
+        imm_Itype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:20]};
         imm_Utype: sign_extended_imm = {Instr[31:12], 12'b0}; // lui, left shift
-        imm_Stype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:25], Instr[11:7]}
+        imm_Stype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:25], Instr[11:7]};
         imm_Btype: sign_extended_imm = {{20{Instr[31]}}, Instr[7], Instr[30:25], Instr[11:8], 1'b0};
         imm_Jtype: sign_extended_imm = {{12{Instr[31]}}, Instr[19:12], Instr[20], Instr[30:21], 1'b0};
         default:   sign_extended_imm = 32'b0;
@@ -103,9 +103,9 @@ end
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 if (AdrSrc_i)
-    PC <= PC + sign_extended_imm; // Branch/Jump target
+    PC = PC + sign_extended_imm; // Branch/Jump target
 else
-    PC <= PC + 4; // Default PC increment
+    PC = PC + 4; // Default PC increment
 
 // ALU Src A Mux
 case (ALUSrcA_i)

@@ -81,7 +81,7 @@ ucsbece154a_rf rf (
     .wd3_i(Result)
 );
 
-assign ALUResult = tempALUout;    // ALU result from the instantiated module
+wire[31:0] tempALUout = ALUout;
 ucsbece154a_alu alu (
     .a_i(A),
     .b_i(B),

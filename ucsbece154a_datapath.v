@@ -29,9 +29,6 @@ module ucsbece154a_datapath (
 
 `include "ucsbece154a_defines.vh"
 
-assign op_o = Instr[6:0];          // Opcode field
-assign funct3_o = Instr[14:12];   // funct3 field
-assign funct7_o = Instr[30];      // Most significant bit of funct7
 
 // Internal registers
 

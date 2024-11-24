@@ -31,7 +31,8 @@ module ucsbece154a_datapath (
 
 // Internal registers
 
-reg [31:0] PC, OldPC, Instr, Data, A, B, ALUout;
+reg [31:0] PC, OldPC, Instr, Data, A, B;
+wire[31:0] ALUout;
 
 // Buses connected to internal registers
 reg [31:0] Result;

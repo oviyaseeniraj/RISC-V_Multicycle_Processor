@@ -132,7 +132,7 @@ module ucsbece154a_controller (
 	} = controls_next;
 
  always @ * begin
-   case (state)
+   case (state_next)
       state_Fetch:     controls_next = 14'b1_x_0_1_0_00_10_0_10_00;   
       state_Decode:    controls_next = 14'b0_0_0_0_0_01_01_x_xx_00;
       state_MemAdr:    controls_next = 14'b0_0_0_0_0_10_01_x_xx_00; 

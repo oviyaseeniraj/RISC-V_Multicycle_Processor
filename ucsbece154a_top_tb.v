@@ -81,15 +81,15 @@ reset = 0;
 for (i = 0; i < 100; i=i+1)
     @(negedge clk);
 
-`ASSERT(reg_zero==32'b0, ("reg_zero incorrect"));
-`ASSERT(reg_sp==32'hBEEF000, ("reg_sp incorrect"));
-`ASSERT(reg_gp==32'h1000004C, ("reg_gp incorrect"));
-`ASSERT(reg_tp==32'h1, ("reg_tp incorrect"));
-`ASSERT(reg_t0==32'hb, ("reg_t0 incorrect"));
-`ASSERT(reg_t2==32'h7, ("reg_t2 incorrect"));
-`ASSERT(MEM_10000060==32'h7, ("mem.DATA[25] incorrect"));
-`ASSERT(MEM_1000006C==32'h19, ("mem.DATA[28] incorrect"));
-`ASSERT(MEM_10000070==32'hBEEF000, ("mem.DATA[29] //incorrect"));
+`ASSERT(reg_zero==32'b0, ("reg_zero incorrect"))
+`ASSERT(reg_sp==32'hBEEF000, ("reg_sp incorrect"))
+`ASSERT(reg_gp==32'h1000004C, ("reg_gp incorrect"))
+`ASSERT(reg_tp==32'h1, ("reg_tp incorrect"))
+`ASSERT(reg_t0==32'hb, ("reg_t0 incorrect"))
+`ASSERT(reg_t2==32'h7, ("reg_t2 incorrect"))
+`ASSERT(MEM_10000060==32'h7, ("mem.DATA[25] incorrect"))
+`ASSERT(MEM_1000006C==32'h19, ("mem.DATA[28] incorrect"))
+`ASSERT(MEM_10000070==32'hBEEF000, ("mem.DATA[29] //incorrect"))
 
 
 //\\ =========================== \\//

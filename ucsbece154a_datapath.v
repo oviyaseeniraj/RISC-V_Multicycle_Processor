@@ -149,12 +149,4 @@ always @ * begin
     endcase
 end
 
-always @(posedge clk) begin
-    if (RegWrite_i) begin
-        rf.a3_i <= Instr[11:7];  // Destination register
-        rf.wd3_i <= Result;      // Data to write
-    end
-end
-
-
 endmodule

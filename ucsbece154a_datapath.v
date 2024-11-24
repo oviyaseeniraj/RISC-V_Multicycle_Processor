@@ -77,12 +77,16 @@ ucsbece154a_rf rf (
     .wd3_i(Result)
 );
 
-wire[31:0] tempALUout = ALUout;
+reg [31:0] ALUout_reg;
+always @(posedge clk) begin
+    ALUout_reg <= ALUout; // Store ALU result before feedback
+end
+
 ucsbece154a_alu alu (
     .a_i(A),
     .b_i(B),
     .alucontrol_i(ALUControl_i),
-    .result_o(tempALUout),
+    .result_o(ALUout_reg),
     .zero_o(zero_o)
 );
 
@@ -103,12 +107,13 @@ end
 // Muxes
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
-always @ * begin
-    if (AdrSrc_i)
-        PC <= PC + sign_extended_imm; // Branch/Jump target
-    else
-        PC <= PC + 4; // Default PC increment
+always @(posedge clk) begin
+    if (reset)
+        PC <= pc_start;
+    else if (PCEn_i)
+        PC <= AdrSrc_i ? PC + sign_extended_imm : PC + 4;
 end
+
 
 // ALU Src A Mux
 always @ * begin

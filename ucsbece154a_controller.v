@@ -58,9 +58,9 @@ module ucsbece154a_controller (
               instr_slt_funct3:    ALUControl_o = ALUcontrol_slt;
               instr_or_funct3:     ALUControl_o = ALUcontrol_or;
               instr_and_funct3:    ALUControl_o = ALUcontrol_and;
-              default:             ALUControl_o = 3'bxxx;
+              default:             ALUControl_o = ALUcontrol_add
           endcase
-      default:       ALUControl_o = 3'bxxx;
+      default:       ALUControl_o = ALUcontrol_add;
     endcase
  end
 

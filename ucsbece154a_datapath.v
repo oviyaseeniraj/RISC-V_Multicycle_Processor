@@ -121,27 +121,17 @@ end
 always @ * begin
     if (ImmSrc_i == imm_Btype && zero_o) begin
         Result = OldPC + sign_extended_imm;
-    end else begin
-        Result = PC;
-    end
-end
-
-/**
-always @ * begin
-    if (ImmSrc_i == imm_Btype && zero_o) begin
-        Result = OldPC + sign_extended_imm;
         ALUout = OldPC + sign_extended_imm;
     end else begin
         Result = PC;
         ALUout = PC;
     end
-end*/
+end
 
 always @ * begin
     case (AdrSrc_i)
         1'b0: Adr = PC;
-        1'b1:
-            case (ImmSrc_i)
+        1'b1: Adr = ALUout;
     endcase
 end
 

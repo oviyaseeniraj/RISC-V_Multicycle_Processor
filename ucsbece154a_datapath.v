@@ -104,12 +104,14 @@ ucsbece154a_alu alu (
 reg [31:0] sign_extended_imm;
 always @ * begin
     case (ImmSrc_i)
-        imm_Itype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:20]};
-        imm_Utype: sign_extended_imm = {Instr[31:12], 12'b0}; // lui, left shift
+         imm_Itype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:20]};
         imm_Stype: sign_extended_imm = {{20{Instr[31]}}, Instr[31:25], Instr[11:7]};
         imm_Btype: sign_extended_imm = {{20{Instr[31]}}, Instr[7], Instr[30:25], Instr[11:8], 1'b0};
-        imm_Jtype: sign_extended_imm = {{12{Instr[31]}}, Instr[19:12], Instr[20], Instr[30:21], 1'b0};
-        default:   sign_extended_imm = 32'b0;
+        imm_Jtype: sign_extended_imm = {{12{Instr[31]}}, Instr[19:12], Instr[20], Instr[30:21], 1'b0}; // imm format for j-type instr
+        imm_Utype: sign_extended_imm = {Instr[31:12], 12'b0}; // imm format for u-type instr
+        default: begin
+            sign_extended_imm = 32'b0;
+        end
     endcase
 end
 
@@ -149,7 +151,7 @@ always @ * begin
         ResultSrc_aluout:    Result = ALUout;  // ALU result
         ResultSrc_data:      Result = Data;   // Memory data
         ResultSrc_aluresult: Result = ALUResult;
-        ResultSrc_lui:       Result = {Instr[31:12], 12'b0}; // LUI immediate
+        ResultSrc_lui:       Result = sign_extended_imm; // LUI immediate
     endcase
 end
 

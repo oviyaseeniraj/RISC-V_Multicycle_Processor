@@ -119,19 +119,9 @@ end
 
 //if branch success then result = pc + imm, else result = oldpc + 4
 always @ * begin
-    if (ImmSrc_i == imm_Btype) begin
-        Result = OldPC + sign_extended_imm;
-        ALUout = OldPC + sign_extended_imm;
-    end else begin
-        Result = PC;
-        ALUout = PC;
-    end
-end
-
-always @ * begin
     case (AdrSrc_i)
         1'b0: Adr = PC;
-        1'b1: Adr = ALUout;
+        1'b1: Adr = Result;
     endcase
 end
 

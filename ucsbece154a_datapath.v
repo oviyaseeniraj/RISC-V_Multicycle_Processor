@@ -83,7 +83,7 @@ ucsbece154a_rf rf (
     .rd1_o(rd1),
     .rd2_o(rd2),
     .we3_i(RegWrite_i),
-    .wd3_i(ALUResult)
+    .wd3_i(Result)
 );
 
 

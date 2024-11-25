@@ -54,7 +54,7 @@ module ucsbece154a_controller (
       ALUop_beq:    ALUControl_o = ALUcontrol_sub;  // Branch uses SUB
       ALUop_other:  // R-type or I-type ALU instructions
           case (funct3_i)
-              instr_addsub_funct3: ALUControl_o = (funct7_i) ? ALUcontrol_sub : ALUcontrol_add;
+              instr_addsub_funct3: ALUControl_o = (RtypeSub) ? ALUcontrol_sub : ALUcontrol_add;
               instr_slt_funct3:    ALUControl_o = ALUcontrol_slt;
               instr_or_funct3:     ALUControl_o = ALUcontrol_or;
               instr_and_funct3:    ALUControl_o = ALUcontrol_and;

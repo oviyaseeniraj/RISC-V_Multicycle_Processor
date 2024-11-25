@@ -58,9 +58,9 @@ module ucsbece154a_controller (
               instr_slt_funct3:    ALUControl_o = ALUcontrol_slt;
               instr_or_funct3:     ALUControl_o = ALUcontrol_or;
               instr_and_funct3:    ALUControl_o = ALUcontrol_and;
-              default:             ALUControl_o = ALUcontrol_add;
+              default:             ALUControl_o = 3'bxxx;
           endcase
-      default:       ALUControl_o = ALUcontrol_add;
+      default:       ALUControl_o = 3'bxxx;
     endcase
  end
 
@@ -143,7 +143,7 @@ module ucsbece154a_controller (
       state_ALUWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_00_xx;     
       state_ExecuteI:  controls_next = 14'b0_0_0_0_0_10_01_x_xx_10;   
       state_JAL:       controls_next = 14'b1_0_0_0_0_01_10_x_00_00; 
-      state_BEQ:       controls_next = 14'b0_1_0_0_0_10_00_x_00_01; 
+      state_BEQ:       controls_next = 14'b0_1_0_0_0_10_00_0_00_01; 
       state_LUI:       controls_next = 14'b0_0_0_0_0_xx_01_x_00_10; 
 	  default:         controls_next = 14'b0_0_0_0_0_00_00_0_00_00;
    endcase

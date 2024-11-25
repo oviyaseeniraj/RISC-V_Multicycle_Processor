@@ -150,7 +150,6 @@ always @ * begin
         ResultSrc_data:      Result = Data;   // Memory data
         ResultSrc_aluresult: Result = ALUResult;
         ResultSrc_lui:       Result = sign_extended_imm; // LUI immediate
-        default:             Result = 32'b0;
     endcase
 end
 

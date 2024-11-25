@@ -120,9 +120,9 @@ end
 //if branch then result = pc + imm, else result = pc + 4
 always @ * begin
     if (ImmSrc_i == imm_Btype) begin
-        Result = PC + sign_extended_imm;
+        Result = OldPC + sign_extended_imm;
     end else begin
-        Result = PC + 32'd4;
+        Result = OldPC + 32'd4;
     end
 end
 

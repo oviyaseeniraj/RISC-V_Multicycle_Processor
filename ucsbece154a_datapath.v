@@ -119,12 +119,12 @@ end
 
 //if branch success then result = pc + imm, else result = oldpc + 4
 always @ * begin
-    if (ImmSrc_i == imm_Btype && zero_o) begin
+    if (ImmSrc_i == imm_Btype) begin
         Result = OldPC + sign_extended_imm;
-        //ALUout = OldPC + sign_extended_imm;
+        ALUout = OldPC + sign_extended_imm;
     end else begin
-        Result = OldPC + 32'd4;
-        //ALUout = OldPC + 32'd4;
+        Result = PC;
+        ALUout = PC;
     end
 end
 

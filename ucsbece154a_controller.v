@@ -39,7 +39,7 @@ module ucsbece154a_controller (
     instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
     instr_jal_op:       ImmSrc_o = 3'b011; 
     instr_lui_op:       ImmSrc_o = 3'b100;  
-    default: 	    ImmSrc_o = 3'b000; 
+    default: 	    ImmSrc_o = 3'bxxx; 
    endcase
  end
 

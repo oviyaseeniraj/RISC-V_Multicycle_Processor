@@ -117,23 +117,31 @@ end
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 
-//if branch then result = pc + imm, else result = pc + 4
+//if branch success then result = pc + imm, else result = oldpc + 4
 always @ * begin
-    if (ImmSrc_i == imm_Btype) begin
+    if (ImmSrc_i == imm_Btype && zero_o) begin
+        Result = OldPC + sign_extended_imm;
+    end else begin
+        Result = PC;
+    end
+end
+
+/**
+always @ * begin
+    if (ImmSrc_i == imm_Btype && zero_o) begin
         Result = OldPC + sign_extended_imm;
         ALUout = OldPC + sign_extended_imm;
     end else begin
-        Result = OldPC + 32'd4;
-        ALUout = OldPC + 32'd4;
+        Result = PC;
+        ALUout = PC;
     end
-end
+end*/
 
 always @ * begin
     case (AdrSrc_i)
         1'b0: Adr = PC;
         1'b1:
-            Adr = ALUout;
-            Result = Adr;
+            case (ImmSrc_i)
     endcase
 end
 

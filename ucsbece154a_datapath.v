@@ -42,6 +42,12 @@ wire [4:0] a3 = Instr[11:7];
 wire [31:0] rd1, rd2;
 wire [31:0] ALUResult;
 
+// intermediates for src muxes
+wire [31:0] srcA, srcB;
+reg [31:0] muxed_srcA, muxed_srcB;
+assign srcA = muxed_srcA;
+assign srcB = muxed_srcB;
+
 
 // Update for all internal registers
 
@@ -75,15 +81,15 @@ ucsbece154a_rf rf (
     .rd1_o(rd1),
     .rd2_o(rd2),
     .we3_i(RegWrite_i),
-    .wd3_i(Result)
+    .wd3_i(ALUResult)
 );
 
-wire[31:0] tempALUout = ALUout;
+
 ucsbece154a_alu alu (
-    .a_i(A),
-    .b_i(B),
+    .a_i(srcA),
+    .b_i(srcB),
     .alucontrol_i(ALUControl_i),
-    .result_o(tempALUout),
+    .result_o(ALUResult),
     .zero_o(zero_o)
 );
 
@@ -102,48 +108,44 @@ always @ * begin
 end
 
 // Muxes
-assign Adr_o = (AdrSrc_i) ? PC : ALUout;  // Choose PC or ALU result based on AdrSrc_i
-assign WriteData_o = B;                  // Data written to memory comes from register B
+assign WriteData_o = rd2;                  // Data written to memory comes from register B
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
-always @(posedge clk) begin
-    if (reset)
-        PC <= pc_start;
-    else if (PCEn_i)
-        PC <= AdrSrc_i ? PC + sign_extended_imm : PC + 4;
+always @ * begin
+    case (AdrSrc_i)
+        1'b0: Adr_o = PC;
+        1'b1: Adr_o = Result;
+    endcase
 end
 
 always @ * begin
     case (ALUSrcA_i)
-        ALUSrcA_pc:    A = PC;
-        ALUSrcA_oldpc: A = OldPC;
-        ALUSrcA_reg:   A = rd1;     // Register file output
-        default:       A = 32'b0;
+        ALUSrcA_pc:    muxed_srcA = PC;
+        ALUSrcA_oldpc: muxed_srcA = OldPC;
+        ALUSrcA_reg:   muxed_srcA = A;     // Register file output
+        default:       muxed_srcA = 32'b0;
     endcase
 end
 
 always @ * begin
     case (ALUSrcB_i)
-        ALUSrcB_reg:   B = rd2;    // Register file output
-        ALUSrcB_imm:   B = sign_extended_imm; // Immediate value
-        ALUSrcB_4:     B = 32'd4; // Constant value (PC increment)
-        default:       B = 32'b0;
+        ALUSrcB_reg:   muxed_srcB = B;    // Register file output
+        ALUSrcB_imm:   muxed_srcB = sign_extended_imm; // Immediate value
+        ALUSrcB_4:     muxed_srcB = 32'd4; // Constant value (PC increment)
+        default:       muxed_srcB = 32'b0;
     endcase
 end
 
 
 // Result Src Mux
-reg [31:0] ALUout_reg;
-always @(posedge clk) begin
-    ALUout_reg <= ALUout; // Store ALU result before feedback
-end
 
 always @ * begin
     case (ResultSrc_i)
-        ResultSrc_aluout: Result = ALUout;  // ALU result
-        ResultSrc_data:   Result = Data;   // Memory data
-        ResultSrc_lui:    Result = sign_extended_imm; // LUI immediate
-        default:          Result = 32'b0;
+        ResultSrc_aluout:    Result = ALUout;  // ALU result
+        ResultSrc_data:      Result = Data;   // Memory data
+        ResultSrc_aluresult: Result = ALUResult;
+        ResultSrc_lui:       Result = sign_extended_imm; // LUI immediate
+        default:             Result = 32'b0;
     endcase
 end
 

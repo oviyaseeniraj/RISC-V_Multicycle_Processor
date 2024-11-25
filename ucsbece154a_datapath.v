@@ -116,6 +116,16 @@ end
 // Muxes
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
+
+//if branch then result = pc + imm, else result = pc + 4
+always @ * begin
+    if (ImmSrc_i == imm_Btype) begin
+        Result = PC + sign_extended_imm;
+    end else begin
+        Result = PC + 32'd4;
+    end
+end
+
 always @ * begin
     case (AdrSrc_i)
         1'b0: Adr = PC;

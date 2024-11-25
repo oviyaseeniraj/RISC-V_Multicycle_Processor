@@ -51,6 +51,10 @@ assign funct3_o = Instr[14:12];
 assign funct7_o = Instr[30];
 assign op_o = Instr[6:0];
 
+assign WriteData_o = B;                  // Data written to memory comes from register B
+reg [31:0] Adr;
+assign Adr_o = Adr;                       // Address written to memory comes from Adr
+
 // Update for all internal registers
 
 always @(posedge clk) begin
@@ -110,9 +114,6 @@ always @ * begin
 end
 
 // Muxes
-assign WriteData_o = B;                  // Data written to memory comes from register B
-reg [31:0] Adr;
-assign Adr_o = Adr;                       // Address written to memory comes from Adr
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 always @ * begin

@@ -42,13 +42,11 @@ wire [4:0] a3 = Instr[11:7];
 wire [31:0] rd1, rd2;
 wire [31:0] ALUResult;
 
-// intermediates for src muxes
+// intermediates and outputs
 wire [31:0] srcA, srcB;
-reg [31:0] muxed_srcA, muxed_srcB;
+reg [31:0] muxed_srcA, muxed_srcB, Adr;
 assign srcA = muxed_srcA;
-assign srcB = muxed_srcB;
-
-// CONNECT outputs  
+assign srcB = muxed_srcB; 
 assign Adr_o = Adr;
 assign funct3_o = Instr[14:12];
 assign funct7_o = Instr[30];

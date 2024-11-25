@@ -123,8 +123,8 @@ always @ * begin
         Result = OldPC + sign_extended_imm;
         ALUout = OldPC + sign_extended_imm;
     end else begin
-        Result = PC;
-        ALUout = PC;
+        Result = OldPC + 32'd4;
+        ALUout = OldPC + 32'd4;
     end
 end
 

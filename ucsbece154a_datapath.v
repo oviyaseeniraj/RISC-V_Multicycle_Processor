@@ -121,10 +121,10 @@ end
 always @ * begin
     if (ImmSrc_i == imm_Btype && zero_o) begin
         Result = OldPC + sign_extended_imm;
-        ALUout = OldPC + sign_extended_imm;
+        //ALUout = OldPC + sign_extended_imm;
     end else begin
         Result = OldPC + 32'd4;
-        ALUout = OldPC + 32'd4;
+        //ALUout = OldPC + 32'd4;
     end
 end
 

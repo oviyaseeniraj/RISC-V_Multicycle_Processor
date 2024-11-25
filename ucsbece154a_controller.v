@@ -114,7 +114,7 @@ module ucsbece154a_controller (
         state_ExecuteI:        state_next = 4'b0111;  
         state_JAL:             state_next = 4'b0111;  
         state_BEQ:             state_next = 4'b0000;  
-        state_LUI:             state_next = 4'b0000; // lui needs to regwrite     
+        state_LUI:             state_next = 4'b0000; // lui needs to regwrite    - test skip step 
         default:               state_next = 4'bxxxx;
      endcase
    end

@@ -44,10 +44,9 @@ wire [31:0] ALUResult;
 
 // intermediates and outputs
 wire [31:0] srcA, srcB;
-reg [31:0] muxed_srcA, muxed_srcB, Adr;
+reg [31:0] muxed_srcA, muxed_srcB;
 assign srcA = muxed_srcA;
-assign srcB = muxed_srcB; 
-assign Adr_o = Adr;
+assign srcB = muxed_srcB;
 assign funct3_o = Instr[14:12];
 assign funct7_o = Instr[30];
 assign op_o = Instr[6:0];
@@ -112,6 +111,8 @@ end
 
 // Muxes
 assign WriteData_o = B;                  // Data written to memory comes from register B
+reg [31:0] Adr;
+assign Adr_o = Adr;                       // Address written to memory comes from Adr
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 always @ * begin

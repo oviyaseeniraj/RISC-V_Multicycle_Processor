@@ -39,7 +39,7 @@ module ucsbece154a_controller (
     instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
     instr_jal_op:       ImmSrc_o = 3'b011; 
     instr_lui_op:       ImmSrc_o = 3'b100;  
-    default: 	    ImmSrc_o = 3'bxxx; 
+    default: 	    ImmSrc_o = 3'b000; 
    endcase
  end
 
@@ -114,8 +114,8 @@ module ucsbece154a_controller (
         state_ExecuteI:        state_next = 4'b0111;  
         state_JAL:             state_next = 4'b0111;  
         state_BEQ:             state_next = 4'b0000;  
-        state_LUI:             state_next = 4'b0111; // lui needs to regwrite     
-        default:               state_next = 4'b0000;
+        state_LUI:             state_next = 4'b0000; // lui needs to regwrite     
+        default:               state_next = 4'bxxxx;
      endcase
    end
  end

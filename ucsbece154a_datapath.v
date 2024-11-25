@@ -108,7 +108,7 @@ always @ * begin
 end
 
 // Muxes
-assign WriteData_o = rd2;                  // Data written to memory comes from register B
+assign WriteData_o = B;                  // Data written to memory comes from register B
 
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 always @ * begin

@@ -131,7 +131,7 @@ end
 always @ * begin
     case (AdrSrc_i)
         1'b0: Adr = PC;
-        1'b1: Adr = Result;
+        1'b1: Adr = ALUout;
     endcase
 end
 

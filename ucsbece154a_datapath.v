@@ -48,6 +48,11 @@ reg [31:0] muxed_srcA, muxed_srcB;
 assign srcA = muxed_srcA;
 assign srcB = muxed_srcB;
 
+// CONNECT outputs  
+assign Adr_o = Adr;
+assign funct3_o = Instr[14:12];
+assign funct7_o = Instr[30];
+assign op_o = Instr[6:0];
 
 // Update for all internal registers
 
@@ -113,8 +118,8 @@ assign WriteData_o = B;                  // Data written to memory comes from re
 // PC Mux - PCSrc_i selects between PC+4 and branch/jump target
 always @ * begin
     case (AdrSrc_i)
-        1'b0: Adr_o = PC;
-        1'b1: Adr_o = Result;
+        1'b0: Adr = PC;
+        1'b1: Adr = Result;
     endcase
 end
 

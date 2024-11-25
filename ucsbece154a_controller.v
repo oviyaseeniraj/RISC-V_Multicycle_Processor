@@ -133,19 +133,19 @@ module ucsbece154a_controller (
 
  always @ * begin
    case (state_next)
-      state_Fetch:    controls_next = {1'b1, 1'b0, 1'b0, 1'b1, 1'b0, ALUSrcA_pc,      ALUSrcB_4,      1'b0, ResultSrc_aluresult,  ALUop_mem};      
-        state_Decode:   controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_oldpc,   ALUSrcB_imm,    1'b0, 2'b00,                ALUop_mem};       
-        state_MemAdr:   controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_imm,    1'b0, 2'b00,                ALUop_mem};      
-        state_MemRead:  controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 2'b00,           2'b00,          1'b1, ResultSrc_aluout,     2'b00};        
-        state_MemWB:    controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_data,       2'b00};       
-        state_MemWrite: controls_next = {1'b0, 1'b0, 1'b1, 1'b0, 1'b0, 2'b00,           2'b00,          1'b1, ResultSrc_aluout,     2'b00};       
-        state_ExecuteR: controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_reg,    1'b0, 2'b00,                ALUop_other};       
-        state_ALUWB:    controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_aluout,     2'b00};           
-        state_ExecuteI: controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_imm,    1'b0, 2'b00,                ALUop_other};         
-        state_JAL:      controls_next = {1'b1, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_oldpc,   ALUSrcB_4,      1'b0, ResultSrc_aluout,     ALUop_mem};       
-        state_BEQ:      controls_next = {1'b0, 1'b1, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_reg,    1'b0, ResultSrc_aluout,     ALUop_beq};       
-        state_LUI:      controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_lui,        2'b00};       
-		default:        controls_next = 14'bx_x_x_x_x_xx_xx_x_xx_xx;
+      state_Fetch:     controls_next = 14'b1_x_0_1_0_00_10_0_10_00;   
+      state_Decode:    controls_next = 14'b0_0_0_0_0_01_01_x_xx_00;
+      state_MemAdr:    controls_next = 14'b0_0_0_0_0_10_01_x_xx_00; 
+      state_MemRead:   controls_next = 14'b0_0_0_0_0_xx_xx_1_00_xx;  
+      state_MemWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_01_xx; 
+      state_MemWrite:  controls_next = 14'b0_0_1_0_0_xx_xx_1_00_xx; 
+      state_ExecuteR:  controls_next = 14'b0_0_0_0_0_10_00_x_xx_10; 
+      state_ALUWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_00_xx;     
+      state_ExecuteI:  controls_next = 14'b0_0_0_0_0_10_01_x_xx_10;   
+      state_JAL:       controls_next = 14'b1_0_0_0_0_01_10_x_00_00; 
+      state_BEQ:      controls_next = {1'b0, 1'b1, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_reg,    1'b0, ResultSrc_aluout,     ALUop_beq};       
+      state_LUI:       controls_next = 14'b0_0_0_0_0_xx_01_x_00_10; 
+	  default:         controls_next = 14'b0_0_0_0_0_00_00_0_00_00;
    endcase
  end
 

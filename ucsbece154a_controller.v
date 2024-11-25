@@ -32,14 +32,14 @@ module ucsbece154a_controller (
 // **********   Extend unit    *********
  always @ * begin
    case (op_i)
-    instr_lw_op:        ImmSrc_o = 3'b000;       
-    instr_sw_op:        ImmSrc_o = 3'b001; 
-    instr_Rtype_op:     ImmSrc_o = 3'bxxx;  
-    instr_beq_op:       ImmSrc_o = 3'b010;  
-    instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
-    instr_jal_op:       ImmSrc_o = 3'b011; 
-    instr_lui_op:       ImmSrc_o = 3'b100;  
-    default: 	    ImmSrc_o = 3'b000; 
+      instr_lw_op:        ImmSrc_o = 3'b000;       
+      instr_sw_op:        ImmSrc_o = 3'b001; 
+      instr_Rtype_op:     ImmSrc_o = 3'bxxx;  
+      instr_beq_op:       ImmSrc_o = 3'b010;  
+      instr_ItypeALU_op:  ImmSrc_o = 3'b000; 
+      instr_jal_op:       ImmSrc_o = 3'b011; 
+      instr_lui_op:       ImmSrc_o = 3'b100;  
+	    default: 	    ImmSrc_o = 3'bxxx; 
    endcase
  end
 
@@ -49,19 +49,22 @@ module ucsbece154a_controller (
  wire RtypeSub = funct7_i & op_i[5];
 
  always @ * begin
-    case (ALUOp)
-      ALUop_mem:    ALUControl_o = ALUcontrol_add;  // Load/Store uses ADD
-      ALUop_beq:    ALUControl_o = ALUcontrol_sub;  // Branch uses SUB
-      ALUop_other:  // R-type or I-type ALU instructions
-          case (funct3_i)
-              instr_addsub_funct3: ALUControl_o = (RtypeSub) ? ALUcontrol_sub : ALUcontrol_add;
-              instr_slt_funct3:    ALUControl_o = ALUcontrol_slt;
-              instr_or_funct3:     ALUControl_o = ALUcontrol_or;
-              instr_and_funct3:    ALUControl_o = ALUcontrol_and;
-              default:             ALUControl_o = ALUcontrol_add;
-          endcase
-      default:       ALUControl_o = ALUcontrol_add;
-    endcase
+    case(ALUOp)
+       ALUop_mem:                 ALUControl_o = ALUcontrol_add;
+       ALUop_beq:                 ALUControl_o = ALUcontrol_sub;
+       ALUop_other: 
+         case(funct3_i) 
+           instr_addsub_funct3: begin
+                 if(RtypeSub)     ALUControl_o = ALUcontrol_sub;
+                 else             ALUControl_o = ALUcontrol_add;  
+           end
+           instr_slt_funct3:      ALUControl_o = ALUcontrol_slt;  
+           instr_or_funct3:       ALUControl_o = ALUcontrol_or;  
+           instr_and_funct3:      ALUControl_o = ALUcontrol_and;  
+           default:               ALUControl_o = 3'bxxx;
+         endcase
+    default:                      ALUControl_o = 3'bxxx;
+   endcase
  end
 
 
@@ -83,38 +86,38 @@ module ucsbece154a_controller (
 
  always @ * begin
     if (reset) begin
-                               state_next = 4'b0000;  
+                               state_next = state_Fetch;  
     end else begin             
       case (state) 
-        state_Fetch:           state_next = 4'b0001;  
+        state_Fetch:           state_next = state_Decode;  
         state_Decode: begin
           case (op_i) 
-            instr_lw_op:       state_next = 4'b0010;  
-            instr_sw_op:       state_next = 4'b0010;  
-            instr_Rtype_op:    state_next = 4'b0110;  
-            instr_beq_op:      state_next = 4'b1010;  
-            instr_ItypeALU_op: state_next = 4'b1000;  
-            instr_lui_op:      state_next = 4'b1011;  
-            instr_jal_op:      state_next = 4'b1001;  
+            instr_lw_op:       state_next = state_MemAdr;  
+            instr_sw_op:       state_next = state_MemAdr;  
+            instr_Rtype_op:    state_next = state_ExecuteR;  
+            instr_beq_op:      state_next = state_BEQ;  
+            instr_ItypeALU_op: state_next = state_ExecuteI;  
+            instr_lui_op:      state_next = state_LUI;  
+            instr_jal_op:      state_next = state_JAL;  
             default:           state_next = 4'bxxxx;
           endcase
         end
         state_MemAdr: begin 
           case (op_i)
-            instr_lw_op:       state_next = 4'b0011;  
-            instr_sw_op:       state_next = 4'b0101;  
+            instr_lw_op:       state_next = state_MemRead;  
+            instr_sw_op:       state_next = state_MemWrite;  
             default:           state_next = 4'bxxxx;
           endcase
         end
-        state_MemRead:         state_next = 4'b0100;  
-        state_MemWB:           state_next = 4'b0000;  
-        state_MemWrite:        state_next = 4'b0000;  
-        state_ExecuteR:        state_next = 4'b0111;  
-        state_ALUWB:           state_next = 4'b0000;  
-        state_ExecuteI:        state_next = 4'b0111;  
-        state_JAL:             state_next = 4'b0111;  
-        state_BEQ:             state_next = 4'b0000;  
-        state_LUI:             state_next = 4'b0000; // lui needs to regwrite    - test skip step 
+        state_MemRead:         state_next = state_MemWB;  
+        state_MemWB:           state_next = state_Fetch;  
+        state_MemWrite:        state_next = state_Fetch;  
+        state_ExecuteR:        state_next = state_ALUWB;  
+        state_ALUWB:           state_next = state_Fetch;  
+        state_ExecuteI:        state_next = state_ALUWB;  
+        state_JAL:             state_next = state_ALUWB;  
+        state_BEQ:             state_next = state_Fetch;  
+        state_LUI:             state_next = state_Fetch;     
         default:               state_next = 4'bxxxx;
      endcase
    end
@@ -132,21 +135,22 @@ module ucsbece154a_controller (
 	} = controls_next;
 
  always @ * begin
-   case (state_next)
-      state_Fetch:     controls_next = 14'b1_x_0_1_0_00_10_0_10_00;   
-      state_Decode:    controls_next = 14'b0_0_0_0_0_01_01_x_xx_00;
-      state_MemAdr:    controls_next = 14'b0_0_0_0_0_10_01_x_xx_00; 
-      state_MemRead:   controls_next = 14'b0_0_0_0_0_xx_xx_1_00_xx;  
-      state_MemWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_01_xx; 
-      state_MemWrite:  controls_next = 14'b0_0_1_0_0_xx_xx_1_00_xx; 
-      state_ExecuteR:  controls_next = 14'b0_0_0_0_0_10_00_x_xx_10; 
-      state_ALUWB:     controls_next = 14'b0_0_0_0_1_xx_xx_x_00_xx;     
-      state_ExecuteI:  controls_next = 14'b0_0_0_0_0_10_01_x_xx_10;   
-      state_JAL:       controls_next = 14'b1_0_0_0_0_01_10_x_00_00; 
-      state_BEQ:       controls_next = 14'b0_1_0_0_0_10_00_0_00_01; 
-      state_LUI:       controls_next = 14'b0_0_0_0_0_xx_01_x_00_10; 
-	  default:         controls_next = 14'b0_0_0_0_0_00_00_0_00_00;
-   endcase
+   	case (state_next)
+						 // 			 PCU   B     MW    IRW   RW    ALUSrcA          ALUSrcB         adSrc rSrc                  ALUOp
+        state_Fetch:    controls_next = {1'b1, 1'b0, 1'b0, 1'b1, 1'b0, ALUSrcA_pc,      ALUSrcB_4,      1'b0, ResultSrc_aluresult,  ALUop_mem};      
+        state_Decode:   controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_oldpc,   ALUSrcB_imm,    1'b0, 2'b00,                ALUop_mem};       
+        state_MemAdr:   controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_imm,    1'b0, 2'b00,                ALUop_mem};      
+        state_MemRead:  controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 2'b00,           2'b00,          1'b1, ResultSrc_aluout,     2'b00};        
+        state_MemWB:    controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_data,       2'b00};       
+        state_MemWrite: controls_next = {1'b0, 1'b0, 1'b1, 1'b0, 1'b0, 2'b00,           2'b00,          1'b1, ResultSrc_aluout,     2'b00};       
+        state_ExecuteR: controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_reg,    1'b0, 2'b00,                ALUop_other};       
+        state_ALUWB:    controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_aluout,     2'b00};           
+        state_ExecuteI: controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_imm,    1'b0, 2'b00,                ALUop_other};         
+        state_JAL:      controls_next = {1'b1, 1'b0, 1'b0, 1'b0, 1'b0, ALUSrcA_oldpc,   ALUSrcB_4,      1'b0, ResultSrc_aluout,     ALUop_mem};       
+        state_BEQ:      controls_next = {1'b0, 1'b1, 1'b0, 1'b0, 1'b0, ALUSrcA_reg,     ALUSrcB_reg,    1'b0, ResultSrc_aluout,     ALUop_beq};       
+        state_LUI:      controls_next = {1'b0, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00,           2'b00,          1'b0, ResultSrc_lui,        2'b00};       
+		default:        controls_next = 14'bx_x_x_x_x_xx_xx_x_xx_xx;
+   	endcase
  end
 
  // *******  Updating control and main FSM FFs  ********
